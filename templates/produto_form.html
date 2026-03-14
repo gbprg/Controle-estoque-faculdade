@@ -30,8 +30,11 @@
         </div>
 
         <div class="form-group">
-            <label for="price">Preço Unitário (R$) *</label>
-            <input type="number" id="price" name="price" step="0.01" min="0" required
+            <label for="price_display">Preço Unitário (R$) *</label>
+            <input type="text" id="price_display" required
+                placeholder="R$ 0,00"
+                value="{{ 'R$ %.2f'|format(produto.price)|replace('.', ',') if produto else 'R$ 0,00' }}">
+            <input type="hidden" id="price" name="price" 
                 value="{{ produto.price if produto else '0.00' }}">
         </div>
 
@@ -41,4 +44,78 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const priceDisplay = document.getElementById('price_display');
+    const priceHidden = document.getElementById('price');
+
+    function formatCurrency(value) {
+        // Remove tudo que não for dígito
+        let digits = value.replace(/\D/g, '');
+        
+        // Remove zeros à esquerda para evitar problemas, mas garante pelo menos 3 dígitos para centavos
+        digits = digits.replace(/^0+/, '');
+        
+        if (digits.length === 0) {
+            return 'R$ 0,00';
+        } else if (digits.length === 1) {
+            return 'R$ 0,0' + digits;
+        } else if (digits.length === 2) {
+            return 'R$ 0,' + digits;
+        } else {
+            const integerPart = digits.slice(0, -2);
+            const decimalPart = digits.slice(-2);
+            
+            // Adiciona pontos de milhar
+            const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            
+            return 'R$ ' + formattedInteger + ',' + decimalPart;
+        }
+    }
+
+    function getRawValue(formattedValue) {
+        // Extrai apenas números e converte para decimal de ponto (float string)
+        let digits = formattedValue.replace(/\D/g, '');
+        if (!digits) return "0.00";
+        
+        const integerPart = digits.slice(0, -2) || "0";
+        const decimalPart = digits.slice(-2).padStart(2, '0');
+        
+        return integerPart + '.' + decimalPart;
+    }
+
+    priceDisplay.addEventListener('input', function(e) {
+        const selectionStart = e.target.selectionStart;
+        const oldLength = e.target.value.length;
+        
+        const formatted = formatCurrency(e.target.value);
+        e.target.value = formatted;
+        
+        // Atualiza o valor real para o backend
+        priceHidden.value = getRawValue(formatted);
+        
+        // Tenta manter o cursor no final para uma digitação mais fluida
+        const newLength = formatted.length;
+        const pos = selectionStart + (newLength - oldLength);
+        e.target.setSelectionRange(pos, pos);
+    });
+
+    // Melhora a UX ao focar: cursor vai para o final
+    priceDisplay.addEventListener('focus', function(e) {
+        setTimeout(() => {
+            const len = e.target.value.length;
+            e.target.setSelectionRange(len, len);
+        }, 10);
+    });
+
+    // Caso já tenha valor (edição)
+    if (priceDisplay.value) {
+        priceDisplay.value = formatCurrency(priceDisplay.value);
+        priceHidden.value = getRawValue(priceDisplay.value);
+    }
+});
+</script>
 {% endblock %}

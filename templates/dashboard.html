@@ -10,31 +10,34 @@
     <table class="data-table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Descrição</th>
-                <th>Preço</th>
-                <th>Quantidade Atual</th>
-                <th>Ações</th>
+                <th class="col-id">ID</th>
+                <th class="col-name">Nome</th>
+                <th class="col-desc">Descrição</th>
+                <th class="col-price">Preço</th>
+                <th class="col-qty">Quantidade</th>
+                <th class="col-actions">Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for p in products %}
             <tr class="{% if p.quantity < p.min_quantity %}row-danger{% endif %}">
-                <td>{{ p.id }}</td>
-                <td><strong>{{ p.name }}</strong></td>
-                <td>{{ p.description }}</td>
-                <td>R$ {{ "%.2f"|format(p.price) }}</td>
-                <td>
-                    <span
-                        class="badge {% if p.quantity < p.min_quantity %}badge-danger{% else %}badge-success{% endif %}">
-                        {{ p.quantity }}
-                    </span>
-                    {% if p.quantity < p.min_quantity %} <span class="warning-icon"
-                        title="Estoque abaixo do mínimo ({{ p.min_quantity }})">⚠️</span>
-                        {% endif %}
+                <td class="col-id">{{ p.id }}</td>
+                <td class="col-name"><strong>{{ p.name }}</strong></td>
+                <td class="col-desc">
+                    <div class="desc-text">{{ p.description }}</div>
                 </td>
-                <td>
+                <td class="col-price">R$ {{ "%.2f"|format(p.price)|replace('.', ',') }}</td>
+                <td class="col-qty">
+                    <div class="qty-wrapper">
+                        <span class="badge {% if p.quantity < p.min_quantity %}badge-danger{% else %}badge-success{% endif %}">
+                            {{ p.quantity }}
+                        </span>
+                        {% if p.quantity < p.min_quantity %}
+                            <span class="warning-icon" title="Estoque abaixo do mínimo ({{ p.min_quantity }})">⚠️</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="col-actions">
                     <a href="{{ url_for('editar_produto', id=p.id) }}" class="btn btn-secondary btn-sm">Editar</a>
                 </td>
             </tr>
