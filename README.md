@@ -14,12 +14,39 @@ A aplicação Web foi construída usando **Python**, com o framework micro-web *
 
 ### Como testar na sua máquina:
 
+#### Linux / macOS
+
 1. Certifique-se de estar com o terminal na pasta raiz do projeto.
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install flask werkzeug
+```
 2. Ative o ambiente virtual e garanta que o Flask está ativo (o `venv` já deve estar com o Flask instalado).
+```bash
+source venv/bin/activate
+```
 3. Inicie o app com o código abaixo:
 
 ```bash
 python3 app.py
+```
+
+#### Windows
+
+1. Certifique-se de estar com o terminal (CMD ou PowerShell) na pasta raiz do projeto.
+```bat
+python -m venv venv
+venv\Scripts\activate
+pip install flask werkzeug
+```
+2. Para ativar o ambiente virtual nas próximas vezes:
+```bat
+venv\Scripts\activate
+```
+3. Inicie o app:
+```bat
+python app.py
 ```
 
 4. A aplicação inicializará o banco de dados nativamente e subirá um servidor. Abra a URL apresentada no terminal (normalmente `http://127.0.0.1:5000`) em qualquer navegador.
