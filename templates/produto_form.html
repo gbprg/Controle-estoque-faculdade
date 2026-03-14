@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+    <h2>{{ action }} Produto</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Nome do Produto *</label>
+            <input type="text" id="name" name="name" required value="{{ produto.name if produto else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Descrição</label>
+            <textarea id="description" name="description"
+                rows="3">{{ produto.description if produto else '' }}</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group half">
+                <label for="quantity">Quantidade Atual *</label>
+                <!-- Validate as number in frontend too -->
+                <input type="number" id="quantity" name="quantity" required min="0"
+                    value="{{ produto.quantity if produto else '0' }}">
+            </div>
+
+            <div class="form-group half">
+                <label for="min_quantity">Quantidade Mínima (Alerta) *</label>
+                <input type="number" id="min_quantity" name="min_quantity" required min="0"
+                    value="{{ produto.min_quantity if produto else '0' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Preço Unitário (R$) *</label>
+            <input type="number" id="price" name="price" step="0.01" min="0" required
+                value="{{ produto.price if produto else '0.00' }}">
+        </div>
+
+        <div class="form-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Salvar Produto</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
