@@ -12,8 +12,7 @@ def init_db():
     print("Inicializando banco de dados...")
     conn = get_db()
     c = conn.cursor()
-    
-    # Criar tabela de usuários
+
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,7 +22,6 @@ def init_db():
         )
     ''')
     
-    # Criar tabela de produtos
     c.execute('''
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +33,6 @@ def init_db():
         )
     ''')
     
-    # Inserir usuário admin padrão se não existir
     c.execute('SELECT * FROM users WHERE username = ?', ('admin',))
     if not c.fetchone():
         hashed_pw = generate_password_hash('admin123')

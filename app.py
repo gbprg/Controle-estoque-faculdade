@@ -7,7 +7,6 @@ import sqlite3
 app = Flask(__name__)
 app.secret_key = 'chave_secreta_super_segura_aqui'
 
-# Inicializa o banco de dados no startup se não existir
 if not os.path.exists('estoque.db'):
     init_db()
 
