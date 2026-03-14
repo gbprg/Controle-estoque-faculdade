@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-header">
+    <h1>Visão Geral do Estoque</h1>
+    <a href="{{ url_for('cadastrar_produto') }}" class="btn btn-primary">Adicionar Novo Produto</a>
+</div>
+
+<div class="products-container">
+    {% if products %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Preço</th>
+                <th>Quantidade Atual</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr class="{% if p.quantity < p.min_quantity %}row-danger{% endif %}">
+                <td>{{ p.id }}</td>
+                <td><strong>{{ p.name }}</strong></td>
+                <td>{{ p.description }}</td>
+                <td>R$ {{ "%.2f"|format(p.price) }}</td>
+                <td>
+                    <span
+                        class="badge {% if p.quantity < p.min_quantity %}badge-danger{% else %}badge-success{% endif %}">
+                        {{ p.quantity }}
+                    </span>
+                    {% if p.quantity < p.min_quantity %} <span class="warning-icon"
+                        title="Estoque abaixo do mínimo ({{ p.min_quantity }})">⚠️</span>
+                        {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('editar_produto', id=p.id) }}" class="btn btn-secondary btn-sm">Editar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>Nenhum produto cadastrado ainda no sistema.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
